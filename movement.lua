@@ -13,7 +13,15 @@ function movement.moveForward(n)
 end
 
 function movement.moveBackwards(n)
-    movement.move(robot.backwards, n)
+    movement.move(robot.back, n)
+end
+
+function movement.moveUp(n)
+    movement.move(robot.up, n)
+end
+
+function movement.moveDown(n)
+    movement.move(robot.down, n)
 end
 
 function movement.moveLeft(n)

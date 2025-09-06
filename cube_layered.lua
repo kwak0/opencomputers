@@ -7,11 +7,10 @@ blockIndex = 0
 
 function orientate()
     while robot.detect() do
-        robot.turnLeft()
+        robot.turnRight()
     end
     robot.forward()
-    robot.up()
-    movement.moveLeft(1)
+    robot.turnLeft()
 end
 
 function lineUpRow()
@@ -26,55 +25,54 @@ function place(cube)
     else
         robot.select(cube[blockIndex])
     end
-    robot.placeDown()
+    robot.place()
 end
 
-function placeColumn(cube)
+function placeRow(cube)
     for i=1,2 do
         place(cube)
-        robot.up()
+        movement.moveRight(1)
+        robot.turnLeft()
     end
     place(cube)
-    print("Column Done")
+    print("Row Done")
 end
 
-function resetColumn()
-    robot.forward()
-    movement.moveDown(2)
-end
-
-function placeWall(cube, last)
+function placeLayer(cube)
     for i=1,2 do
-        placeColumn(cube)
-        if not (i == 2 and last) then
-            resetColumn()
-        end
+        placeRow(cube)
+        robot.back()
+        lineUpRow()
     end
+    placeRow(cube)
+    print("Layer Done")
 end
 
 function drop(cube)
+    robot.back()
     robot.select(cube["drop"])
     robot.drop()
+    robot.forward()
 end
 
-function reset(cube)
-    movement.moveBackwards(3)
-    drop(cube)
-    resetColumn()
-    movement.moveLeft(1)
-    movement.moveRight(1)
-end
+function placeCube(cube, n)
+    orientate()
+    for j=1,n do
+        for i=1,3 do
+            movement.moveForward(2)
+            placeLayer(cube)
+            lineUpRow()
+            if i ~= 3 then
+                robot.up()
+            end
+        end
 
-function placeCube(cube)
-    for i=1,4 do
-        placeWall(cube, i == 4)
-        robot.turnRight()
+        for i=1,2 do
+            robot.down()
+        end
+        drop(cube)
+        print("Completed " .. cubeName)
     end
-    resetColumn()
-    placeColumn(cube)
-    print("Completed " .. cubeName)
-    
-    reset(cube)
 end
 
 cubes = {
@@ -90,8 +88,5 @@ elseif cubes[cubeName] == nil then
 elseif not tonumber(n) then
     print(n .. " is not an integer")
 else
-    orientate()
-    for j=1,n do
-        placeCube(cubes[arg[1]])
-    end
+    placeCube(cubes[arg[1]], n)
 end

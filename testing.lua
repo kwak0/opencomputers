@@ -1,7 +1,7 @@
 math = require("math")
 testing = {}
 
-printFunctions = {"forward", "back", "up", "down", "turnLeft", "turnRight", "place"}
+printFunctions = {"forward", "back", "up", "down", "turnLeft", "turnRight", "place", "placeDown", "drop"}
 randBoolFunctions = {"detect"}
 
 function printTesting(f)
